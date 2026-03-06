@@ -1,11 +1,5 @@
 import mongoose from 'mongoose';
 
-const MONGODB_URI = process.env.MONGODB_URI;
-
-if (!MONGODB_URI) {
-    throw new Error('Please define MONGODB_URI in your environment variables');
-}
-
 // Cache the connection across serverless invocations
 let cached = global.mongoose;
 if (!cached) {
@@ -14,6 +8,11 @@ if (!cached) {
 
 async function connectDB() {
     if (cached.conn) return cached.conn;
+
+    const MONGODB_URI = process.env.MONGODB_URI;
+    if (!MONGODB_URI) {
+        throw new Error('Please define MONGODB_URI in your environment variables');
+    }
 
     if (!cached.promise) {
         cached.promise = mongoose.connect(MONGODB_URI, {
