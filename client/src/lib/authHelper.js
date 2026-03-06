@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import { NextResponse } from 'next/server';
 import connectDB from './db';
 import User from './models/User';
 
@@ -28,7 +29,7 @@ export async function verifyAuth(request) {
 export async function requireAuth(request) {
     const user = await verifyAuth(request);
     if (!user) {
-        return { error: Response.json({ message: 'Unauthorized' }, { status: 401 }) };
+        return { error: NextResponse.json({ message: 'Unauthorized' }, { status: 401 }) };
     }
     return { user };
 }
@@ -37,7 +38,7 @@ export async function requireAdmin(request) {
     const result = await requireAuth(request);
     if (result.error) return result;
     if (result.user.role !== 'admin') {
-        return { error: Response.json({ message: 'Admin access required' }, { status: 403 }) };
+        return { error: NextResponse.json({ message: 'Admin access required' }, { status: 403 }) };
     }
     return result;
 }
